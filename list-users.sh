@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# Helper function to check if correct arguments are passed
-function helper() {
-    expected_cmd_args=2
-    if [ $# -ne $expected_cmd_args ]; then
-        echo "Please execute the script with the required command line arguments."
-        exit 1
-    fi
-}
-
 # GitHub API URL
 API_URL="https://api.github.com"
 
@@ -16,7 +7,7 @@ API_URL="https://api.github.com"
 USERNAME=$username
 TOKEN=$token
 
-# GitHub user and repo information
+# User and Repository information
 REPO_OWNER=$1
 REPO_NAME=$2
 
@@ -33,10 +24,10 @@ function github_api_get {
 function list_users_with_read_access {
     local endpoint="repos/${REPO_OWNER}/${REPO_NAME}/collaborators"
 
-    # Fetch list of collaborators on the repo
+    # Fetch the list of collaborators on the repository
     collaborators="$(github_api_get "$endpoint" | jq -r '.[] | select(.permissions.pull == true) | .login')"
 
-    # Display list of collaborators
+    # Display the list of collaborators with read access
     if [[ -z "$collaborators" ]]; then
         echo "No users with read access found for ${REPO_OWNER}/${REPO_NAME}."
     else
@@ -45,8 +36,7 @@ function list_users_with_read_access {
     fi
 }
 
-# Make sure the script is run with the required arguments
-helper $@
+# Main script
 
 echo "Listing users with read access to ${REPO_OWNER}/${REPO_NAME}..."
 list_users_with_read_access
